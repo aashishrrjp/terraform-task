@@ -1,0 +1,47 @@
+name: CI - Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  GCP_PROJECT_ID: mando-service-project-1
+  GCP_REGION: us-central1
+  ARTIFACT_REGISTRY_REPO: app-images # Must match Terraform repo name
+  SERVICE_NAME: my-app
+  GCP_SERVICE_ACCOUNT: github-actions-runner@mando-service-project-1.iam.gserviceaccount.com
+  GCP_WORKLOAD_IDENTITY_PROVIDER: projects/123456789012/locations/global/workloadIdentityPools/github-pool/providers/github-provider # <-- Replace 123456789012 with your actual GCP project number
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write' # Required for Workload Identity Federation
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: 'google-github-actions/auth@v1'
+        with:
+          workload_identity_provider: ${{ env.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ env.GCP_SERVICE_ACCOUNT }}
+
+      - name: Set up Cloud SDK
+        uses: 'google-github-actions/setup-gcloud@v1'
+
+      - name: Configure Docker
+        run: gcloud auth configure-docker ${{ env.GCP_REGION }}-docker.pkg.dev
+
+      - name: Build and Push Docker Image
+        run: |
+          IMAGE_TAG=${{ github.sha }}
+          IMAGE_URL="${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY_REPO }}/${{ env.SERVICE_NAME }}:${IMAGE_TAG}"
+
+          echo "Building image: $IMAGE_URL"
+          docker build -t $IMAGE_URL .
+          docker push $IMAGE_URL
