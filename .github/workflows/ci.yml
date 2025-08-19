@@ -11,7 +11,7 @@ env:
   ARTIFACT_REGISTRY_REPO: docker-repo # Must match Terraform repo name
   SERVICE_NAME: my-app
   GCP_SERVICE_ACCOUNT: github-actions-runner@mando-service-project-1.iam.gserviceaccount.com
-  GCP_WORKLOAD_IDENTITY_PROVIDER: projects/443035084206/locations/global/workloadIdentityPools/github-pool-2/providers/github-provider-2
+  GCP_WORKLOAD_IDENTITY_PROVIDER: principalSet://iam.googleapis.com/projects/443035084206/locations/global/workloadIdentityPools/github-pool-2/attribute.repository/aashishrrjp/Terraform-app
 
 jobs:
   build-and-push:
