@@ -45,3 +45,6 @@ jobs:
           echo "Building image: $IMAGE_URL"
           docker build -t $IMAGE_URL .
           docker push $IMAGE_URL
+
+      - name: Print gcloud auth info
+        run: gcloud auth list
