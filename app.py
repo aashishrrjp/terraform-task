@@ -3,7 +3,6 @@ import random
 import os
 
 app = Flask(__name__)
-# A secret key is required to use the session feature
 app.secret_key = os.urandom(24)
 
 # HTML template with embedded CSS for styling and Jinja2 for dynamic content
