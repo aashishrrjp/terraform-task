@@ -11,7 +11,8 @@ env:
   ARTIFACT_REGISTRY_REPO: app-images # Must match Terraform repo name
   SERVICE_NAME: my-app
   GCP_SERVICE_ACCOUNT: github-actions-runner@mando-service-project-1.iam.gserviceaccount.com
-  GCP_WORKLOAD_IDENTITY_PROVIDER: projects/123456789012/locations/global/workloadIdentityPools/github-pool/providers/github-provider # <-- Replace 123456789012 with your actual GCP project number
+  env:
+  GCP_WORKLOAD_IDENTITY_PROVIDER: projects/443035084206/locations/global/workloadIdentityPools/github-pool-2/providers/github-provider-2
 
 jobs:
   build-and-push:
