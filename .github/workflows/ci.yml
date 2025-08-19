@@ -46,9 +46,13 @@ jobs:
       - name: Build and Push Docker Image
         run: |
           IMAGE_TAG=${{ github.sha }}
-          IMAGE_URL="${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY_REPO }}/${{ env.SERVICE_NAME }}:${IMAGE_TAG}"
-
-          echo "Building image: $IMAGE_URL"
-          docker build -t $IMAGE_URL .
-          docker push $IMAGE_URL
+          IMAGE_URL="${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY_REPO }}/${{ env.SERVICE_NAME }}"
+          
+          # Build and push with commit SHA
+          docker build -t $IMAGE_URL:$IMAGE_TAG .
+          docker push $IMAGE_URL:$IMAGE_TAG
+          
+          # Tag and push as latest
+          docker tag $IMAGE_URL:$IMAGE_TAG $IMAGE_URL:latest
+          docker push $IMAGE_URL:latest
 
